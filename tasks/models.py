@@ -6,70 +6,77 @@ class Task(models.Model):
     - Наименование
     - Ссылка на родительскую задачу (если есть зависимость)
     - Исполнитель
-    - Срок
+    - Срок (time)
     - Статус
     - Дополнительные поля (по необходимости)
-
-    я буду [ДЕЙСТВИЕ] в [ВРЕМЯ] в [МЕСТО]
-    Привычка:
-    Пользователь
-    Место
-    Время
-    Действие
-    Признак приятной привычки
-    Связанная привычка
-    Периодичность (по умолчанию ежедневная)
-    Вознаграждение
-    Время на выполнение
-    Признак публичности
     """
 
-    user = models.ForeignKey(
-        User, verbose_name="Пользователь", on_delete=models.CASCADE
+    name = models.CharField(
+        null=True, blank=True, max_length=100, verbose_name="Наименование задачи"
     )
-    place = models.CharField(
+    parent_task_link = models.ForeignKey(
+        "tasks.Task",
         null=True,
         blank=True,
-        max_length=50,
-        verbose_name="Место"
-    )
-    time = models.TimeField(null=True, blank=True, verbose_name="Время")
-    action = models.CharField(
-        max_length=150,
-        verbose_name="Действие, которое представляет собой привычка"
-    )
-    is_pleasant_habit = models.BooleanField(
-        default=False, verbose_name="Признак приятной привычки"
-    )
-    linked_habit = models.ForeignKey(
-        "habits.Habit",
-        null=True,
-        blank=True,
-        verbose_name="Связанная привычка",
+        verbose_name="Связанная родительская задача",
         on_delete=models.SET_NULL,
     )
-    period = models.PositiveIntegerField(
-        null=True, blank=True, verbose_name="Периодичность"
-    )  # количество дней, по умолчанию ежедневная
-    reward = models.CharField(
-        null=True, blank=True, max_length=150, verbose_name="Вознаграждение"
-    )
-    is_public = models.BooleanField(
-        default=False,
-        verbose_name="Признак публичности"
-    )
-    duration = models.PositiveIntegerField(
-        null=True, blank=True, verbose_name="Время выполнения"
-    )  # Время выполнения должно быть не больше 120 секунд.
-    last_date_of_execution = models.DateField(
+    responsible = models.ForeignKey(
+        "tasks.Employee",
         null=True,
         blank=True,
-        verbose_name="Дата последнего выполнения"
+        verbose_name="Исполнитель",
+        on_delete=models.SET_NULL,
+    )
+    deadline = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Срок выполнения задачи"
+    )
+
+    CREATED = "Создана"
+    STARTED = "Запущена"
+    COMPLETED = "Завершена"
+
+    STATUS_CHOICES = [
+        (COMPLETED, "Завершена"),
+        (CREATED, "Создана"),
+        (STARTED, "Запущена"),
+    ]
+
+    status = models.CharField(
+        max_length=150,
+        choices=STATUS_CHOICES,
+        default=CREATED,
+        verbose_name="Статус"
     )
 
     def __str__(self):
-        return f"Habit {self.action}"
+        return f"Task {self.name}"
 
     class Meta:
-        verbose_name = "привычка"
-        verbose_name_plural = "привычки"
+        verbose_name = "задача"
+        verbose_name_plural = "задачи"
+
+
+class Employee(models.Model):
+    """
+    - ФИО
+    - Должность
+    - Дополнительные поля (по необходимости)
+    """
+
+    name = models.CharField(null=True, blank=True, max_length=150, verbose_name="ФИО")
+    position = models.CharField(
+        null=True,
+        blank=True,
+        max_length=150,
+        verbose_name="Должность"
+    )
+
+    def __str__(self):
+        return f"Employee {self.name}"
+
+    class Meta:
+        verbose_name = "работник"
+        verbose_name_plural = "работники"
