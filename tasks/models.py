@@ -74,6 +74,8 @@ class Employee(models.Model):
         verbose_name="Должность"
     )
 
+    #active_tasks_count = models.IntegerField(default=0, verbose_name="Количество активных задач")
+
     def __str__(self):
         return f"Employee {self.name}"
 
