@@ -3,7 +3,10 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from tasks.apps import TasksConfig
-from tasks.views import TaskViewSet, EmployeeViewSet, WorkloadEmployeesView, UrgentTasksView
+from tasks.views import (TaskViewSet,
+                         EmployeeViewSet,
+                         WorkloadEmployeesView,
+                         UrgentTasksView)
 
 app_name = TasksConfig.name
 

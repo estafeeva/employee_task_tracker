@@ -3,7 +3,7 @@ import datetime
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from tasks.models import Task, Employee
+from tasks.models import Task
 
 from django.urls import reverse
 
@@ -13,7 +13,9 @@ class TaskTestCase(APITestCase):
     def setUp(self):
         self.task = Task.objects.create(
             name="Test1",
-            deadline=datetime.datetime.now().astimezone()+datetime.timedelta(days=2)
+            deadline=(
+                    datetime.datetime.now().astimezone() +
+                    datetime.timedelta(days=2))
         )
 
     def test_task_retrieve(self):
@@ -52,4 +54,3 @@ class TaskTestCase(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-

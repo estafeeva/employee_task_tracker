@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from tasks.models import Task, Employee
 from tasks.validators import validate_deadline
-#from tasks.views import WorkloadEmployeesView
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -82,11 +81,9 @@ class WorkloadSerializer(EmployeeSerializer):
     active_tasks = serializers.SerializerMethodField()
     active_tasks_count = serializers.SerializerMethodField()
 
-
     def get_active_tasks(self, obj):
         obj_tasks = Task.objects.filter(responsible=obj)
         return TaskSerializer(obj_tasks, many=True).data
 
     def get_active_tasks_count(self, obj):
         return Task.objects.filter(responsible=obj).count()
-

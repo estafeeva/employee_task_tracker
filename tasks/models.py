@@ -12,7 +12,10 @@ class Task(models.Model):
     """
 
     name = models.CharField(
-        null=True, blank=True, max_length=100, verbose_name="Наименование задачи"
+        null=True,
+        blank=True,
+        max_length=100,
+        verbose_name="Наименование задачи"
     )
     parent_task_link = models.ForeignKey(
         "tasks.Task",
@@ -66,15 +69,19 @@ class Employee(models.Model):
     - Дополнительные поля (по необходимости)
     """
 
-    name = models.CharField(null=True, blank=True, max_length=150, verbose_name="ФИО")
+    name = models.CharField(
+        null=True,
+        blank=True,
+        max_length=150,
+        verbose_name="ФИО"
+    )
+
     position = models.CharField(
         null=True,
         blank=True,
         max_length=150,
         verbose_name="Должность"
     )
-
-    #active_tasks_count = models.IntegerField(default=0, verbose_name="Количество активных задач")
 
     def __str__(self):
         return f"Employee {self.name}"

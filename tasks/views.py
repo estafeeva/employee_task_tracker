@@ -1,10 +1,12 @@
-from django.db.models import Prefetch
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 
 from tasks.models import Task, Employee
-from tasks.serializers import TaskSerializer, EmployeeSerializer, WorkloadSerializer, UrgentTaskSerializer
+from tasks.serializers import (TaskSerializer,
+                               EmployeeSerializer,
+                               WorkloadSerializer,
+                               UrgentTaskSerializer)
 
 
 class TaskViewSet(ModelViewSet):
@@ -30,10 +32,13 @@ class WorkloadEmployeesView(ListAPIView):
     serializer_class = WorkloadSerializer
 
     def list(self, request, *args, **kwargs):
-        #order = request.query_params.get('ordering')
         q = self.get_queryset()
         serializer = self.get_serializer(q, many=True)
-        sorted_q = sorted(serializer.data, key=lambda x: x['active_tasks_count'], reverse=True)
+        sorted_q = sorted(
+            serializer.data,
+            key=lambda x: x['active_tasks_count'],
+            reverse=True
+        )
 
         return Response(sorted_q)
 
@@ -56,5 +61,6 @@ class UrgentTasksView(ListAPIView):
 
     """
 
-    queryset = Task.objects.filter(status=Task.CREATED).exclude(parent_task_link=None)
+    queryset = Task.objects.filter(
+        status=Task.CREATED).exclude(parent_task_link=None)
     serializer_class = UrgentTaskSerializer
