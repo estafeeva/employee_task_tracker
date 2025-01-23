@@ -53,9 +53,10 @@ class UrgentTaskSerializer(TaskSerializer):
         parent_task = obj.parent_task_link
         if parent_task:
             e2 = parent_task.responsible
-            count_e2 = Task.objects.filter(responsible=e2).count()
-            if count_e2 < (min_count + 3):
-                suitable_employee = e2
+            if e2:
+                count_e2 = Task.objects.filter(responsible=e2).count()
+                if count_e2 - min_count <= 2:
+                    suitable_employee = e2
 
         return EmployeeSerializer(suitable_employee).data.get("name")
 

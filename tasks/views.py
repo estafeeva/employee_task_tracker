@@ -61,6 +61,29 @@ class UrgentTasksView(ListAPIView):
 
     """
 
-    queryset = Task.objects.filter(
-        status=Task.CREATED).exclude(parent_task_link=None)
+    #queryset = Task.objects.filter(
+    #    status=Task.CREATED).exclude(parent_task_link=None)
     serializer_class = UrgentTaskSerializer
+
+    """child_started = Task.objects.filter(
+        status=Task.STARTED).exclude(parent_task_link=None)
+    print(child_started)
+
+    parent_pk_list_for_child_started = [item.parent_task_link.pk for item in child_started]
+    print(parent_pk_list_for_child_started)
+
+    # parent_not_started
+    queryset = Task.objects.filter(
+        status=Task.CREATED).filter(pk__in=parent_pk_list_for_child_started)
+    print(queryset)"""
+
+    def get_queryset(self):
+
+        return Task.objects.filter(
+            status=Task.CREATED).filter(
+            pk__in=[
+                item.parent_task_link.pk for item in
+                Task.objects.filter(status=Task.STARTED
+                                    ).exclude(parent_task_link=None)
+            ]
+        )
